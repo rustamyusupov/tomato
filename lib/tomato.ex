@@ -49,6 +49,8 @@ defmodule Tomato.CLI do
   end
 
   defp get_time(time) do
+    IO.inspect Timex.now |> Timex.shift(minutes: time)
+
     if time, do: Integer.to_string(time), else: "+40"
   end
 
