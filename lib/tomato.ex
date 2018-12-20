@@ -1,4 +1,7 @@
 defmodule Tomato.CLI do
+  alias Tomato.Status
+  alias Tomato.Progress
+
   def main(args \\ []) do
     args
     |> parse_args
@@ -24,29 +27,16 @@ defmodule Tomato.CLI do
     time = opts[:time] || duration
 
     Enum.join([icon, description, until], " ")
-    |> set_status
+    |> Status.set
 
-    start_timer(time)
+    Progress.start(time)
 
-    "clear" |> set_status
-  end
-
-  defp set_status(message) do
-    IO.puts(message)
+    Status.set("clear")
   end
 
   defp get_time(timezone, duration) do
     Timex.now(timezone)
     |> Timex.shift(minutes: duration)
     |> Timex.format!("{h24}:{m}")
-  end
-
-  defp start_timer(time) do
-    interval = Kernel.trunc(time * 1000 / 100) # * 60
-
-    Enum.each 1..100, fn (i) ->
-      ProgressBar.render(i, 100)
-      :timer.sleep interval
-    end
   end
 end
