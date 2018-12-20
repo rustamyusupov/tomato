@@ -17,9 +17,16 @@ defmodule Tomato.CLI do
   end
 
   defp tomat(opts) do
-    get_status_message(opts) |> set_status
+    duration = 40
+    icon = ":#{opts[:icon] || "tomato"}:"
+    description = opts[:description] || "освобожусь в"
+    until = get_time("+3", opts[:time] || duration)
+    time = opts[:time] || duration
 
-    start_timer(opts[:time])
+    Enum.join([icon, description, until], " ")
+    |> set_status
+
+    start_timer(time)
 
     "clear" |> set_status
   end
@@ -28,34 +35,14 @@ defmodule Tomato.CLI do
     IO.puts(message)
   end
 
-  defp get_status_message(opts) do
-    Enum.join([
-      get_icon(opts[:icon]),
-      get_description(opts[:description]),
-      get_time(opts[:time])
-    ], " ")
+  defp get_time(timezone, duration) do
+    Timex.now(timezone)
+    |> Timex.shift(minutes: duration)
+    |> Timex.format!("{h24}:{m}")
   end
 
   defp start_timer(time) do
-    if time, do: start_progress(time), else: start_progress(40)
-  end
-
-  defp get_icon(icon) do
-    if icon, do: ":#{String.downcase(icon)}:", else: ":tomato:"
-  end
-
-  defp get_description(description) do
-    "фигачу" <> if description, do: " #{description}"
-  end
-
-  defp get_time(time) do
-    IO.inspect Timex.now |> Timex.shift(minutes: time)
-
-    if time, do: Integer.to_string(time), else: "+40"
-  end
-
-  defp start_progress(time) do
-    interval = Kernel.trunc(time * 1000 / 100) # in seconds
+    interval = Kernel.trunc(time * 1000 / 100) # * 60
 
     Enum.each 1..100, fn (i) ->
       ProgressBar.render(i, 100)
