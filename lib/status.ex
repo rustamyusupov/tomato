@@ -1,9 +1,8 @@
 defmodule Tomato.Status do
   def set(text, emoji) do
-    token = "xoxp-2183023374-124945812292-510851594439-95e3a95bb531f7d94e744e175e2bccd2"
     url = get_url()
     body = get_body(text, emoji)
-    headers = get_headers(token)
+    headers = get_headers("")
 
     request(url, body, headers)
   end
