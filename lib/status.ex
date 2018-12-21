@@ -1,27 +1,23 @@
 defmodule Tomato.Status do
   def set(text, emoji) do
     url = get_url()
+    body = get_body(text, emoji)
+    headers = get_headers("")
 
-    headers = [
-      {"Content-type", "application/json; charset=utf-8"},
-      {"Authorization", "Bearer xoxp-2183023374-124945812292-480298980756-d5d9b579e995a6d171706a7942ab34d4"}
-    ]
-
-    body = %{
-      profile: %{
-        status_text: text,
-        status_emoji: get_emoji(emoji),
-      }
-    } |> Poison.encode!
-
-    IO.puts body
-
-    {:ok, response} = HTTPoison.post(url, body, headers, [])
-    # IO.inspect response.body |> Poison.decode
+    request(url, body, headers)
   end
 
   def clear do
     set("", "")
+  end
+
+  defp request(url, body, headers) do
+    case HTTPoison.post(url, body, headers) do
+      {:ok, %HTTPoison.Response{status_code: 200}} ->
+        nil
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        IO.inspect reason
+    end
   end
 
   defp get_url do
@@ -31,7 +27,24 @@ defmodule Tomato.Status do
     "#{api}#{method}"
   end
 
+  defp get_body(text, emoji) do
+    %{
+      profile: %{
+        status_text: text,
+        status_emoji: get_emoji(emoji),
+      }
+    } |> Poison.encode!
+  end
+
   defp get_emoji(str) do
     if str != "", do: ":#{str}:", else: ""
+  end
+
+  def get_headers(token) do
+    %{
+      "Content-Type" => "application/json; charset=utf-8",
+      "Accept" => "application/json",
+      "Authorization" => "Bearer #{token}"
+    }
   end
 end
