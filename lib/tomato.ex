@@ -5,6 +5,7 @@
 # ./tomato -e smile -t test -d 40 -p  -> :smile: test 40 true
 
 defmodule Tomato.CLI do
+  alias Tomato.Config
   alias Tomato.Slack
   alias Tomato.Progress
 
@@ -26,30 +27,24 @@ defmodule Tomato.CLI do
   end
 
   defp tomat(opts) do
-    token = get_token()
-    default_duration = 40
-    emoji = get_emoji(opts[:emoji])
-    text = opts[:text]
-    until = get_time("+3", opts[:duration] || default_duration)
-    message = "#{text} #{until}"
-    presence = opts[:presence]
-    time = opts[:duration] || default_duration
+    # token = get_token()
+    # default_duration = 40
+    # emoji = get_emoji(opts[:emoji])
+    # text = opts[:text]
+    # until = get_time("+3", opts[:duration] || default_duration)
+    # message = "#{text} #{until}"
+    # presence = opts[:presence]
+    # time = opts[:duration] || default_duration
 
-    Slack.set_status(token, emoji, message)
-    presence && Slack.set_presence(token, "away")
+    params = Config.init("./config.json")
 
-    Progress.start(time)
+    # Slack.set_status(token, emoji, message)
+    # presence && Slack.set_presence(token, "away")
 
-    Slack.set_status(token, "", "")
-    presence && Slack.set_presence(token, "auto")
-  end
+    # Progress.start(time)
 
-  defp get_token do
-    ""
-  end
-
-  defp get_emoji(str) do
-    if str != "", do: ":#{str}:", else: ""
+    # Slack.set_status(token, "", "")
+    # presence && Slack.set_presence(token, "auto")
   end
 
   defp get_time(timezone, duration) do
