@@ -1,5 +1,11 @@
+# ./tomato                            -> :json[emoji]: json[text] json[duration] json[presence]
+# ./tomato -e smile                   -> :smile: json[text] json[duration] json[presence]
+# ./tomato -e smile -t test           -> :smile: test json[duration] json[presence]
+# ./tomato -e smile -t test -d 40     -> :smile: test 40 json[presence]
+# ./tomato -e smile -t test -d 40 -p  -> :smile: test 40 true
+
 defmodule Tomato.CLI do
-  alias Tomato.Status
+  alias Tomato.Slack
   alias Tomato.Progress
 
   def main(args \\ []) do
@@ -12,25 +18,38 @@ defmodule Tomato.CLI do
     {opts, _, _} =
       args
       |> OptionParser.parse(
-        strict: [icon: :string, description: :string, time: :integer],
-        aliases: [i: :icon, d: :description, t: :time]
+        strict: [emoji: :string, text: :string, duration: :integer, presence: :boolean],
+        aliases: [e: :emoji, t: :text, d: :duration, p: :presence]
       )
 
     opts
   end
 
   defp tomat(opts) do
-    duration = 40
-    emoji = opts[:icon] || "tomato"
-    text = opts[:description] || "освобожусь в"
-    until = get_time("+3", opts[:time] || duration)
-    time = opts[:time] || duration
+    token = get_token()
+    default_duration = 40
+    emoji = get_emoji(opts[:emoji])
+    text = opts[:text]
+    until = get_time("+3", opts[:duration] || default_duration)
+    message = "#{text} #{until}"
+    presence = opts[:presence]
+    time = opts[:duration] || default_duration
 
-    Status.set("#{text} #{until}", emoji)
+    Slack.set_status(token, emoji, message)
+    presence && Slack.set_presence(token, "away")
 
     Progress.start(time)
 
-    Status.clear
+    Slack.set_status(token, "", "")
+    presence && Slack.set_presence(token, "auto")
+  end
+
+  defp get_token do
+    ""
+  end
+
+  defp get_emoji(str) do
+    if str != "", do: ":#{str}:", else: ""
   end
 
   defp get_time(timezone, duration) do
