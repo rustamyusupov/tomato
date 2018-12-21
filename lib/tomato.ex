@@ -21,17 +21,16 @@ defmodule Tomato.CLI do
 
   defp tomat(opts) do
     duration = 40
-    icon = ":#{opts[:icon] || "tomato"}:"
-    description = opts[:description] || "освобожусь в"
+    emoji = opts[:icon] || "tomato"
+    text = opts[:description] || "освобожусь в"
     until = get_time("+3", opts[:time] || duration)
     time = opts[:time] || duration
 
-    Enum.join([icon, description, until], " ")
-    |> Status.set
+    Status.set("#{text} #{until}", emoji)
 
     Progress.start(time)
 
-    Status.set("clear")
+    Status.clear
   end
 
   defp get_time(timezone, duration) do

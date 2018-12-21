@@ -1,7 +1,9 @@
 {application,tomato,
-             [{applications,[kernel,stdlib,elixir,progress_bar,tzdata,timex]},
+             [{applications,[kernel,stdlib,elixir,progress_bar,poison,tzdata,
+                             timex,httpoison]},
               {description,"tomato"},
-              {modules,['Elixir.Tomato.CLI']},
+              {modules,['Elixir.Tomato.CLI','Elixir.Tomato.Progress',
+                        'Elixir.Tomato.Status']},
               {registered,[]},
               {vsn,"0.1.0"},
-              {application,[timex,tzdata,logger]}]}.
+              {application,[timex,httpoison,logger]}]}.
