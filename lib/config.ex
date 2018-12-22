@@ -1,9 +1,9 @@
 defmodule Tomato.Config do
-  def init(filename) do
+  def init(options, filename) do
     filename
     |> get_json
-    |> convert_json
-    |> get_defaults
+    |> convert
+    |> get_params(convert(options))
   end
 
   defp get_json(filename) do
@@ -11,27 +11,21 @@ defmodule Tomato.Config do
          {:ok, json} <- Poison.decode(body), do: json
   end
 
-  defp convert_json(json) do
+  defp convert(json) do
     Enum.map(json, fn ({key, value}) -> {:"#{key}", value} end)
   end
 
-  defp get_defaults(json_params) do
-    defaults = Application.get_all_env(:tomato)
-
+  defp get_params(json_params, options) do
     json_params
     |> remove_empty_params()
-    |> merge_params(defaults)
+    |> merge_params(options)
   end
 
   defp remove_empty_params(json_params) do
     Enum.reject(json_params, fn {_k, value} -> is_nil(value) end)
   end
 
-  defp merge_params(json_params, defaults) do
-    Keyword.merge(defaults, json_params)
-  end
-
-  defp get_emoji(str) do
-    if str != "", do: ":#{str}:", else: ""
+  defp merge_params(json_params, options) do
+    Keyword.merge(json_params, options)
   end
 end
