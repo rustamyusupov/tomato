@@ -3,7 +3,6 @@ defmodule Tomato.CLI do
   alias Tomato.Slack
   alias Tomato.Progress
 
-  @config_filename "./config.json"
   @default_sound "doom.wav"
   @help [
     "Tomato is a tool for set slack status and presence\n",
@@ -18,7 +17,7 @@ defmodule Tomato.CLI do
   def main(args \\ []) do
     args
     |> parse_args
-    |> Config.init(@config_filename)
+    |> Config.init
     |> process
   end
 
@@ -43,7 +42,7 @@ defmodule Tomato.CLI do
 
     cond do
       !token ->
-        IO.puts "Token not set -> config.json"
+        IO.puts "Token not set in environment variable"
 
       (emoji || text || presence) ->
         expiration = get_expiration(timezone, duration)

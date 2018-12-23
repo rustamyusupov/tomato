@@ -1,31 +1,32 @@
 defmodule Tomato.Config do
-  def init(options, filename) do
-    filename
-    |> get_json
-    |> convert
-    |> get_params(convert(options))
+  def init(options) do
+    options
+    |> convert_to_list
+    |> get_params(get_env())
   end
 
-  defp get_json(filename) do
-    with {:ok, body} <- File.read(filename),
-         {:ok, json} <- Poison.decode(body), do: json
+  defp convert_to_list(params) do
+    Enum.map(params, fn ({key, value}) -> {:"#{key}", value} end)
   end
 
-  defp convert(json) do
-    Enum.map(json, fn ({key, value}) -> {:"#{key}", value} end)
+  defp get_env do
+    [
+      token: System.get_env("TOMATO_TOKEN"),
+      timezone: System.get_env("TOMATO_TIMEZONE")
+    ]
   end
 
-  defp get_params(json_params, options) do
-    json_params
+  defp get_params(options, env) do
+    options
     |> remove_empty_params()
-    |> merge_params(options)
+    |> merge_params(env)
   end
 
-  defp remove_empty_params(json_params) do
-    Enum.reject(json_params, fn {_k, value} -> is_nil(value) end)
+  defp remove_empty_params(params) do
+    Enum.reject(params, fn {_k, value} -> is_nil(value) end)
   end
 
-  defp merge_params(json_params, options) do
-    Keyword.merge(json_params, options)
+  defp merge_params(params, options) do
+    Keyword.merge(params, options)
   end
 end
