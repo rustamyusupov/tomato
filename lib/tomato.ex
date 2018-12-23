@@ -1,50 +1,75 @@
-# ./tomato                            -> :json[emoji]: json[text] json[duration] json[presence]
-# ./tomato -e smile                   -> :smile: json[text] json[duration] json[presence]
-# ./tomato -e smile -t test           -> :smile: test json[duration] json[presence]
-# ./tomato -e smile -t test -d 40     -> :smile: test 40 json[presence]
-# ./tomato -e smile -t test -d 40 -p  -> :smile: test 40 true
+# без токена -> сообщение нет токена в конфиге, ссылка на описание в gh
+# без параметров -> сообщение помощь по ключам
+# только время –> сообщение нечего устанавливать
+# комбинации имоджи/текст/присутствие –> устанавливаем без ограничения по времени
+# комбинации имоджи/текст/присутствие + время –> устанавливаем комбинации имоджи/текст/присутствие с ограничением по времени
 
 defmodule Tomato.CLI do
   alias Tomato.Config
   alias Tomato.Slack
   alias Tomato.Progress
 
+  @config_filename "./config.json"
+  @default_sound "doom.wav"
+
   def main(args \\ []) do
     args
     |> parse_args
-    |> tomat
+    |> process
   end
 
   defp parse_args(args) do
     {opts, _, _} =
       args
       |> OptionParser.parse(
-        strict: [emoji: :string, text: :string, duration: :integer, presence: :boolean],
+        strict: [emoji: :string, text: :string, duration: :integer, presence: :string],
         aliases: [e: :emoji, t: :text, d: :duration, p: :presence]
       )
 
     opts
   end
 
-  defp tomat(opts) do
-    # token = get_token()
-    # default_duration = 40
-    # emoji = get_emoji(opts[:emoji])
-    # text = opts[:text]
-    # until = get_time("+3", opts[:duration] || default_duration)
-    # message = "#{text} #{until}"
-    # presence = opts[:presence]
-    # time = opts[:duration] || default_duration
+  defp process ([]) do
+    IO.puts "help"
+  end
 
-    params = Config.init("./config.json")
+  defp process(opts) do
+    params = Config.init(opts, @config_filename)
+    token = params[:token]
+    emoji = params[:emoji]
+    text = params[:text]
+    presence = (params[:presence] == "auto" || params[:presence] == "away") && params[:presence] || false
+    duration = params[:duration]
 
-    # Slack.set_status(token, emoji, message)
-    # presence && Slack.set_presence(token, "away")
+    IO.inspect params
 
-    # Progress.start(time)
+    cond do
+      !token ->
+        IO.puts "please set token"
 
-    # Slack.set_status(token, "", "")
-    # presence && Slack.set_presence(token, "auto")
+      ((emoji || text || presence) && duration) ->
+        IO.puts "emoji|text|presence and duration"
+
+        until = get_time(params[:timezone] || 0, duration)
+        message = "#{text} #{until}"
+        Slack.set_status(token, emoji, message)
+        presence && Slack.set_presence(token, presence)
+
+        Progress.start(duration)
+
+        Slack.set_status(token, "", "")
+        presence && Slack.set_presence(token, !presence)
+
+      (emoji || text || presence) ->
+        IO.puts "emoji|text|presence"
+
+        Slack.set_status(token, emoji, text)
+        presence && Slack.set_presence(token, presence)
+
+      duration
+      true ->
+        IO.puts "nothing to do"
+    end
   end
 
   defp get_time(timezone, duration) do

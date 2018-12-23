@@ -1,9 +1,3 @@
 {
-  "token": "123",
-  "emoji": ":tomato:",
-  "text": "working",
-  "duration": 40,
-  "timezone": "+3",
-  "presence": true,
-  "sound": "doom.wav"
+  "token": ""
 }
