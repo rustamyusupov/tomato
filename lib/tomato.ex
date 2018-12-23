@@ -74,5 +74,4 @@ defmodule Tomato.CLI do
   defp show_help do
     Enum.each(@help, fn line -> IO.puts line end)
   end
-
 end
