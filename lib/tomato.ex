@@ -37,27 +37,21 @@ defmodule Tomato.CLI do
     token = params[:token]
     emoji = params[:emoji]
     text = params[:text]
-    presence = (params[:presence] == "auto" || params[:presence] == "away") && params[:presence] || false
     duration = params[:duration]
+    presence = params[:presence]
+    timezone = params[:timezone] || 0
 
     cond do
       !token ->
         IO.puts "Token not set -> config.json"
 
-      ((emoji || text || presence) && duration) ->
-        until = get_time(params[:timezone] || 0, duration)
-        message = "#{text} #{until}"
-        Slack.set_status(token, emoji, message)
-        presence && Slack.set_presence(token, presence)
-
-        Progress.start(duration)
-
-        Slack.set_status(token, "", "")
-        presence && Slack.set_presence(token, !presence)
-
       (emoji || text || presence) ->
-        Slack.set_status(token, emoji, text)
+        expiration = get_expiration(timezone, duration)
+
+        Slack.set_status(token, emoji, text, expiration)
         presence && Slack.set_presence(token, presence)
+        duration && Progress.start(duration)
+        presence && duration && Slack.set_presence(token)
 
       duration ->
         IO.puts "Nothing to do"
@@ -67,13 +61,18 @@ defmodule Tomato.CLI do
     end
   end
 
+  defp get_expiration(timezone, duration) do
+    case duration do
+      nil -> 0
+      _ ->
+        Timex.now(timezone)
+        |> Timex.shift(minutes: duration)
+        |> Timex.to_unix()
+    end
+  end
+
   defp show_help do
     Enum.each(@help, fn line -> IO.puts line end)
   end
 
-  defp get_time(timezone, duration) do
-    Timex.now(timezone)
-    |> Timex.shift(minutes: duration)
-    |> Timex.format!("{h24}:{m}")
-  end
 end
