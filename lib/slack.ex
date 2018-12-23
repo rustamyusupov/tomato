@@ -1,13 +1,13 @@
 defmodule Tomato.Slack do
-  def set_status(token, emoji, text) do
+  def set_status(token, emoji \\ "", text \\ "", expiration \\ 0) do
     url = get_url("users.profile.set")
-    body = get_profile_body(emoji, text)
+    body = get_profile_body(emoji, text, expiration)
     headers = get_headers(token)
 
     request(url, body, headers)
   end
 
-  def set_presence(token, presence) do
+  def set_presence(token, presence \\ "auto") do
     url = get_url("users.setPresence")
     body = get_presence_body(presence)
     headers = get_headers(token)
@@ -19,11 +19,12 @@ defmodule Tomato.Slack do
     "https://slack.com/api/" <> endpoint
   end
 
-  defp get_profile_body(emoji, text) do
+  defp get_profile_body(emoji, text, expiration) do
     %{
       profile: %{
         status_emoji: emoji,
         status_text: text,
+        status_expiration: expiration
       }
     } |> Poison.encode!
   end
