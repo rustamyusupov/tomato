@@ -45,10 +45,16 @@ defmodule Tomato.Slack do
 
   defp request(url, body, headers) do
     case HTTPoison.post(url, body, headers) do
-      {:ok, %HTTPoison.Response{status_code: 200}} ->
-        nil
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        body |> Poison.decode |> print_request_error
       {:error, %HTTPoison.Error{reason: reason}} ->
         IO.inspect reason
+    end
+  end
+
+  defp print_request_error(response) do
+    case response do
+      {:ok, response} -> response["error"] && IO.puts response["error"]
     end
   end
 end
