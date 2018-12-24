@@ -26,35 +26,38 @@ defmodule Tomato.Slack do
         status_text: text,
         status_expiration: expiration
       }
-    } |> Poison.encode!
+    }
+    |> Poison.encode!()
   end
 
   defp get_presence_body(presence) do
     %{
       presence: presence
-    } |> Poison.encode!
+    }
+    |> Poison.encode!()
   end
 
   def get_headers(token) do
     %{
       "Content-Type": "application/json; charset=utf-8",
-      "Accept": "application/json",
-      "Authorization": "Bearer #{token}"
+      Accept: "application/json",
+      Authorization: "Bearer #{token}"
     }
   end
 
   defp request(url, body, headers) do
     case HTTPoison.post(url, body, headers) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        body |> Poison.decode |> print_request_error
+        body |> Poison.decode() |> print_request_error
+
       {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect reason
+        IO.inspect(reason)
     end
   end
 
   defp print_request_error(response) do
     case response do
-      {:ok, response} -> response["error"] && IO.puts response["error"]
+      {:ok, response} -> response["error"] && IO.puts(response["error"])
     end
   end
 end

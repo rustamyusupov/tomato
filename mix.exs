@@ -14,7 +14,7 @@ defmodule Tomato.MixProject do
 
   def application do
     [
-      application: [:timex, :httpoison, :logger],
+      application: [:timex, :httpoison, :logger]
     ]
   end
 
@@ -24,7 +24,7 @@ defmodule Tomato.MixProject do
       {:timex, "~> 3.1"},
       {:tzdata, "~> 0.1.7", override: true},
       {:poison, "~> 3.1"},
-      {:httpoison, "~> 1.4"},
+      {:httpoison, "~> 1.4"}
     ]
   end
 

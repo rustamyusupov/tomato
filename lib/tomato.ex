@@ -18,7 +18,7 @@ defmodule Tomato.CLI do
   def main(args \\ []) do
     args
     |> parse_args
-    |> Config.init
+    |> Config.init()
     |> process
   end
 
@@ -26,7 +26,13 @@ defmodule Tomato.CLI do
     {opts, _, _} =
       args
       |> OptionParser.parse(
-        strict: [emoji: :string, text: :string, duration: :integer, presence: :string, say: :string],
+        strict: [
+          emoji: :string,
+          text: :string,
+          duration: :integer,
+          presence: :string,
+          say: :string
+        ],
         aliases: [e: :emoji, t: :text, d: :duration, p: :presence, s: :say]
       )
 
@@ -44,9 +50,9 @@ defmodule Tomato.CLI do
 
     cond do
       !token ->
-        IO.puts "Token not set in environment variable"
+        IO.puts("Token not set in environment variable")
 
-      (emoji || text || presence) ->
+      emoji || text || presence ->
         expiration = get_expiration(timezone, duration)
 
         Slack.set_status(token, emoji, text, expiration)
@@ -57,7 +63,7 @@ defmodule Tomato.CLI do
         duration && say && say_finished(say)
 
       duration ->
-        IO.puts "Nothing to do"
+        IO.puts("Nothing to do")
 
       true ->
         show_help()
@@ -66,7 +72,9 @@ defmodule Tomato.CLI do
 
   defp get_expiration(timezone, duration) do
     case duration do
-      nil -> 0
+      nil ->
+        0
+
       _ ->
         Timex.now(timezone)
         |> Timex.shift(minutes: duration)
@@ -75,7 +83,7 @@ defmodule Tomato.CLI do
   end
 
   defp show_help do
-    Enum.each(@help, fn line -> IO.puts line end)
+    Enum.each(@help, fn line -> IO.puts(line) end)
   end
 
   defp say_finished(say) do

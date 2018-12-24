@@ -6,7 +6,7 @@ defmodule Tomato.Config do
   end
 
   defp convert_to_list(params) do
-    Enum.map(params, fn ({key, value}) -> {:"#{key}", value} end)
+    Enum.map(params, fn {key, value} -> {:"#{key}", value} end)
   end
 
   defp get_env do
