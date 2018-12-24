@@ -7,11 +7,11 @@ defmodule Tomato.CLI do
     "Tomato is a tool for set slack status and presence\n",
     "Usage: tomato [parameters]\n",
     "Parameters:",
-    "  -e - Emoji: status emoji",
-    "  -t - Text: status text",
-    "  -p - Presence: auto | away",
-    "  -d - Duration: how long set status in minutes",
-    "  -s - Say: command say phrase at the end"
+    "  -e - emoji: status emoji",
+    "  -t - text: status text",
+    "  -p - presence: auto | away",
+    "  -d - duration: how long set status in minutes",
+    "  -s - say: command say phrase at the end"
   ]
   @miliseconds_in_minutes 1000 * 60
 
