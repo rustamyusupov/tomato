@@ -3,16 +3,17 @@ defmodule Tomato.CLI do
   alias Tomato.Slack
   alias Tomato.Progress
 
-  @default_sound "doom.wav"
   @help [
     "Tomato is a tool for set slack status and presence\n",
     "Usage: tomato [parameters]\n",
     "Parameters:",
-    "  -e - Emoji",
-    "  -t - Text",
+    "  -e - Emoji: status emoji",
+    "  -t - Text: status text",
     "  -p - Presence: auto | away",
-    "  -d - Duration: how long set status in minutes"
+    "  -d - Duration: how long set status in minutes",
+    "  -s - Say: command say phrase at the end"
   ]
+  @miliseconds_in_minutes 1000 * 60
 
   def main(args \\ []) do
     args
@@ -25,8 +26,8 @@ defmodule Tomato.CLI do
     {opts, _, _} =
       args
       |> OptionParser.parse(
-        strict: [emoji: :string, text: :string, duration: :integer, presence: :string],
-        aliases: [e: :emoji, t: :text, d: :duration, p: :presence]
+        strict: [emoji: :string, text: :string, duration: :integer, presence: :string, say: :string],
+        aliases: [e: :emoji, t: :text, d: :duration, p: :presence, s: :say]
       )
 
     opts
@@ -38,6 +39,7 @@ defmodule Tomato.CLI do
     text = params[:text]
     duration = params[:duration]
     presence = params[:presence]
+    say = params[:say]
     timezone = params[:timezone] || 0
 
     cond do
@@ -49,9 +51,10 @@ defmodule Tomato.CLI do
 
         Slack.set_status(token, emoji, text, expiration)
         presence && Slack.set_presence(token, presence)
-        duration && Progress.start(duration)
+        duration && Progress.start(duration * @miliseconds_in_minutes)
         duration && Slack.set_status(token)
         presence && duration && Slack.set_presence(token)
+        duration && say && say_finished(say)
 
       duration ->
         IO.puts "Nothing to do"
@@ -73,5 +76,9 @@ defmodule Tomato.CLI do
 
   defp show_help do
     Enum.each(@help, fn line -> IO.puts line end)
+  end
+
+  defp say_finished(say) do
+    System.cmd("say", [say])
   end
 end
