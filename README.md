@@ -18,11 +18,11 @@ Tomato is a command-line tool to set slack status (emoji and text) and availabil
 Run `./tomato` without parameters to show help.
 
 `./tomato [parameters]`  
-  -e - Emoji: status emoji  
-  -t - Text: status text  
-  -p - Presence: auto | away  
-  -d - Duration: how long set status in minutes  
-  -s - Say: command say phrase at the end
+&nbsp;&nbsp;&nbsp;&nbsp;-e - Emoji: status emoji  
+&nbsp;&nbsp;&nbsp;&nbsp;-t - Text: status text  
+&nbsp;&nbsp;&nbsp;&nbsp;-p - Presence: auto | away  
+&nbsp;&nbsp;&nbsp;&nbsp;-d - Duration: how long set status in minutes  
+&nbsp;&nbsp;&nbsp;&nbsp;-s - Say: command say phrase at the end
 
 ## Examples
 Set emoji :tomato:, message "working", presence "away", during 25 minutes, after time end say "finished" and clear status and presence:
