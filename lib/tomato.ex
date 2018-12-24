@@ -53,7 +53,7 @@ defmodule Tomato.CLI do
         presence && Slack.set_presence(token, presence)
         duration && Progress.start(duration * @miliseconds_in_minutes)
         duration && Slack.set_status(token)
-        presence && duration && Slack.set_presence(token)
+        duration && presence && Slack.set_presence(token)
         duration && say && say_finished(say)
 
       duration ->
