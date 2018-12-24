@@ -1,4 +1,4 @@
-# Tomato
+# Tomato :tomato:
 Tomato is a command-line tool to set slack status (emoji and text) and availability.
 
 * [Installation](#installation)
