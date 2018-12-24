@@ -15,37 +15,34 @@ Tomato is a command-line tool to set slack status (emoji and text) and availabil
 5. Make the Tomato executable by typing in console: `chmod a+x tomato`
 
 ## Usage
-`tomato [parameters]`
+Run `./tomato` without parameters to show help.
 
-    -e - Emoji: status emoji
-
-    -t - Text: status text
-
-    -p - Presence: auto | away
-
-    -d - Duration: how long set status in minutes
-
-    -s - Say: command say phrase at the end
+`./tomato [parameters]`  
+  -e - Emoji: status emoji  
+  -t - Text: status text  
+  -p - Presence: auto | away  
+  -d - Duration: how long set status in minutes  
+  -s - Say: command say phrase at the end
 
 ## Examples
 Set emoji :tomato:, message "working", presence "away", during 25 minutes, after time end say "finished" and clear status and presence:
 ```
-tomato -e :tomato: -t working -p away -s finished -d 25
+./tomato -e :tomato: -t working -p away -s finished -d 25
 ```
-`Set emoji :slack_call:, text "meeting":
+Set emoji :slack_call:, text "meeting":
 ```
-tomato -e :slack_call: -t meeting
+./tomato -e :slack_call: -t meeting
 ```
 
 ## Aliases
 Examples of possible aliases:
-- work: `tomato -e :tomato: -t working -p away -s finished -d 25`
-- lunch: `tomato -e :fork_and_knife: -t eating -p away -d 60`
-- meet: `tomato -e :slack_call: -t meeting`
-- away: `tomato -p away`
-- active: `tomato -p auto`
-- afk: `tomato -e :runner: -t AFK -p away -d 30`
-- rs (remove status): `tomato -e -t -p auto`
+- work: `./tomato -e :tomato: -t working -p away -s finished -d 25`
+- lunch: `./tomato -e :fork_and_knife: -t eating -p away -d 60`
+- meet: `./tomato -e :slack_call: -t meeting`
+- away: `./tomato -p away`
+- active: `./tomato -p auto`
+- afk: `./tomato -e :runner: -t AFK -p away -d 30`
+- rs (remove status): `./tomato -e -t -p auto`
 
 ## Credits and license
 By Rustam Yusupov 2018-12-24 under the MIT license.
