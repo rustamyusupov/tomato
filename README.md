@@ -35,7 +35,7 @@ tomato -e :slack_call: -t meeting
 ```
 
 ## Aliases
-Examples of possible aliases (before copy tomato to /usr/local/bin):
+Examples of possible aliases (copy tomato to /usr/local/bin):
 ```
 alias work='tomato -e :tomato: -t working -p away -s finished -d 25'
 alias lunch='tomato -e :fork_and_knife: -t eating -p away -d 60'
