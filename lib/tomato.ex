@@ -13,12 +13,11 @@ defmodule Tomato.CLI do
     "  -d - duration: how long set status in minutes",
     "  -s - say: command say phrase at the end"
   ]
-  @miliseconds_in_minutes 1000 * 60
+  @miliseconds_in_minutes 1000 # * 60
 
   def main(args \\ []) do
     args
     |> parse_args
-    |> Config.init()
     |> process
   end
 
@@ -27,20 +26,27 @@ defmodule Tomato.CLI do
       args
       |> OptionParser.parse(
         strict: [
+          help: :boolean,
           emoji: :string,
           text: :string,
           duration: :integer,
           presence: :string,
           say: :string
         ],
-        aliases: [e: :emoji, t: :text, d: :duration, p: :presence, s: :say]
+        aliases: [h: :help, e: :emoji, t: :text, d: :duration, p: :presence, s: :say]
       )
 
     opts
   end
 
-  defp process(params) do
+  defp process([]) do
+    IO.puts "no args"
+  end
+
+  defp process(options) do
+    params = Config.init(options)
     token = params[:token]
+    help = params[:help]
     emoji = params[:emoji]
     text = params[:text]
     duration = params[:duration]
@@ -51,6 +57,9 @@ defmodule Tomato.CLI do
     cond do
       !token ->
         IO.puts("Token not set in environment variable")
+
+      help ->
+        show_help()
 
       emoji || text || presence ->
         expiration = get_expiration(timezone, duration)
@@ -64,9 +73,6 @@ defmodule Tomato.CLI do
 
       duration ->
         IO.puts("Nothing to do")
-
-      true ->
-        show_help()
     end
   end
 
