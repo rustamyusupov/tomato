@@ -73,4 +73,4 @@ tomato -e :runner: -t AFK -p away -d 45
 
 
 ## Credits and license
-By Rustam Yusupov 2018-12-30 under the MIT license.
+By Rustam Yusupov 2018-12-25 under the MIT license.
