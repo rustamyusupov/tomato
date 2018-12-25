@@ -26,11 +26,11 @@ Run `tomato` without parameters to show help.
 &nbsp;&nbsp;&nbsp;&nbsp;-s - say: command say phrase at the end
 
 ## Examples
-Set emoji :tomato:, message "working", presence "away", during 25 minutes, after time end say "finished" and clear status and presence:
+Set emoji :tomato:, message "working", presence "away", during 25 minutes, after time end say "finished", clear status and presence:
 ```
 tomato -e :tomato: -t working -p away -s finished -d 25
 ```
-Set emoji :slack_call:, text "meeting":
+Set emoji :slack_call: and text "meeting":
 ```
 tomato -e :slack_call: -t meeting
 ```
@@ -44,12 +44,12 @@ alias meet='tomato -e :slack_call: -t meeting'
 alias away='tomato -p away'
 alias active='tomato -p auto'
 alias afk='tomato -e :runner: -t AFK -p away -d 30'
-alias rs='tomato -e -t -p auto'
+alias rs='tomato -e -t -p auto' # remove status and presence
 ```
 Run:  
 ```
 work
-lunch
+rs
 etc
 ```
  Aliases with params:
