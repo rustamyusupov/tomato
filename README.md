@@ -64,7 +64,7 @@ work "Working on My Task Name" 10
 lunch 30
 afk 45
 ```
-This alias run:
+This aliases run:
 ```
 tomato -e :tomato: -t Working on My Task Name -p away -s finished -d 10
 tomato -e :fork_and_knife: -t eating -p away -d 30
