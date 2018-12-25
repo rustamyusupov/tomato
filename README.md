@@ -12,7 +12,8 @@ Tomato is a command-line tool to set slack status (emoji and text) and availabil
 2. Generate Slack [legacy token](https://api.slack.com/custom-integrations/legacy-tokens)
 3. [Set environmet variable](https://gist.github.com/rustamyusupov/fbbec3785b7876bfe9712a2e2b9ef5ef) TOMATO_TOKEN="your token from step 2"
 4. Download [tomato](https://github.com/rustamyusupov/tomato/raw/master/tomato) app
-5. Make the Tomato executable by typing in console: `chmod a+x tomato`
+5. Move tomato to `/usr/local/bin`
+6. Make the Tomato executable by typing in console: `chmod a+x tomato`
 
 ## Usage
 Run `tomato` without parameters to show help.
@@ -24,7 +25,7 @@ Run `tomato` without parameters to show help.
 &nbsp;&nbsp;&nbsp;&nbsp;-d - duration: how long set status in minutes  
 &nbsp;&nbsp;&nbsp;&nbsp;-s - say: command say phrase at the end
 
-## Examples``
+## Examples
 Set emoji :tomato:, message "working", presence "away", during 25 minutes, after time end say "finished" and clear status and presence:
 ```
 tomato -e :tomato: -t working -p away -s finished -d 25
@@ -35,7 +36,7 @@ tomato -e :slack_call: -t meeting
 ```
 
 ## Aliases
-Examples of possible aliases (copy tomato to /usr/local/bin):
+Examples of possible aliases:
 ```
 alias work='tomato -e :tomato: -t working -p away -s finished -d 25'
 alias lunch='tomato -e :fork_and_knife: -t eating -p away -d 60'
@@ -45,6 +46,31 @@ alias active='tomato -p auto'
 alias afk='tomato -e :runner: -t AFK -p away -d 30'
 alias rs='tomato -e -t -p auto'
 ```
+Run:  
+```
+work
+lunch
+etc
+```
+ Aliases with params:
+```
+alias work='f() { tomato -e :tomato: -t $1 -p away -s "tomat finished" -d $2 };f'
+alias lunch='f() { tomato -e :fork_and_knife: -t eating -p away -d $1 };f'
+alias afk='f() { tomato -e :runner: -t AFK -p away -d $1 };f'
+```
+Run:  
+```
+work "Working on My Task Name" 10
+lunch 30
+afk 45
+```
+This alias run:
+```
+tomato -e :tomato: -t Working on My Task Name -p away -s finished -d 10
+tomato -e :fork_and_knife: -t eating -p away -d 30
+tomato -e :runner: -t AFK -p away -d 45
+```
+
 
 ## Credits and license
 By Rustam Yusupov 2018-12-30 under the MIT license.
