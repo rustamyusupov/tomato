@@ -3,9 +3,9 @@ defmodule Tomato.Token do
 
   def init(token) do
     if !check(token) do
-      IO.puts "Token invalid."
+      IO.puts("Token invalid.")
       token = prompt()
-      IO.puts ""
+      IO.puts("")
 
       init(token)
     else
@@ -19,7 +19,7 @@ defmodule Tomato.Token do
 
   defp prompt do
     "Input slack token: "
-    |> IO.gets
+    |> IO.gets()
     |> String.trim()
   end
 end

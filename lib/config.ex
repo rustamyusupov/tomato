@@ -16,7 +16,9 @@ defmodule Tomato.Config do
       true ->
         file
         |> read
-      false -> []
+
+      false ->
+        []
     end
   end
 
@@ -25,20 +27,20 @@ defmodule Tomato.Config do
     |> String.split(~r/\n|\r\n|\r/, trim: true)
     |> Enum.reject(fn line -> String.starts_with?(line, ["#", ";"]) end)
     |> Enum.map(fn line ->
-        case String.split(line, ~r/\s/, parts: 2) do
-          [option]         -> {to_atom(option), true}
-          [option, value] -> {to_atom(option), value}
-        end
-      end)
+      case String.split(line, ~r/\s/, parts: 2) do
+        [option] -> {to_atom(option), true}
+        [option, value] -> {to_atom(option), value}
+      end
+    end)
   end
 
-  defp to_atom(option), do: String.downcase(option) |> String.to_atom
+  defp to_atom(option), do: String.downcase(option) |> String.to_atom()
 
   defp get_data(config, key, value) do
     if Enum.empty?(config) do
       "#{key} #{value}\n"
     else
-      Enum.map(config, fn({c_key, c_value}) ->
+      Enum.map(config, fn {c_key, c_value} ->
         if to_string(c_key) == key, do: "#{c_key} #{value}\n", else: "#{c_key} #{c_value}\n"
       end)
     end
@@ -46,7 +48,9 @@ defmodule Tomato.Config do
 
   defp write(data, file) do
     case File.write(file, data) do
-      :ok -> file
+      :ok ->
+        file
+
       {:error, error} ->
         IO.puts("There was an error: #{error}")
         System.halt(0)
