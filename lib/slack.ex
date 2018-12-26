@@ -1,9 +1,11 @@
 defmodule Tomato.Slack do
+  alias Tomato.Request
+
   def check_auth(token) do
     url = get_url("auth.test")
     headers = get_headers(token)
 
-    request(url, [], headers)["ok"]
+    Request.post(url, [], headers)
   end
 
   def set_status(token, emoji \\ "", text \\ "", expiration \\ 0) do
@@ -11,7 +13,8 @@ defmodule Tomato.Slack do
     body = get_profile_body(emoji, text, expiration)
     headers = get_headers(token)
 
-    request(url, body, headers)
+    Request.post(url, body, headers)
+    |> print_request_error
   end
 
   def set_presence(token, presence \\ "auto") do
@@ -19,7 +22,8 @@ defmodule Tomato.Slack do
     body = get_presence_body(presence)
     headers = get_headers(token)
 
-    request(url, body, headers)
+    Request.post(url, body, headers)
+    |> print_request_error
   end
 
   defp get_url(endpoint) do
@@ -52,25 +56,7 @@ defmodule Tomato.Slack do
     }
   end
 
-  defp request(url, body, headers) do
-    case HTTPoison.post(url, body, headers) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        body |> Poison.decode() |> get_request_response
-
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect(reason)
-    end
-  end
-
-  defp get_request_response(response) do
-    case response do
-      {:ok, response} -> response
-    end
-  end
-
   defp print_request_error(response) do
-    case response do
-      {:ok, response} -> response["error"] && IO.puts(response["error"])
-    end
+    response["error"] && IO.puts(response["error"])
   end
 end

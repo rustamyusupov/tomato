@@ -14,7 +14,7 @@ defmodule Tomato.Token do
   end
 
   defp check(token) do
-    Slack.check_auth(token)
+    Slack.check_auth(token)["ok"]
   end
 
   defp prompt do
