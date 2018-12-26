@@ -1,32 +1,55 @@
 defmodule Tomato.Config do
-  def init(options) do
-    options
-    |> convert_to_list
-    |> get_params(get_env())
+  def init(file) do
+    file
+    |> get_options
   end
 
-  defp convert_to_list(params) do
-    Enum.map(params, fn {key, value} -> {:"#{key}", value} end)
+  def save(key, value, file) do
+    file
+    |> init
+    |> get_data(key, value)
+    |> write(file)
   end
 
-  defp get_env do
-    [
-      token: System.get_env("TOMATO_TOKEN"),
-      timezone: System.get_env("TOMATO_TIMEZONE")
-    ]
+  defp get_options(file) do
+    case File.exists?(file) do
+      true ->
+        file
+        |> read
+      false -> []
+    end
   end
 
-  defp get_params(options, env) do
-    options
-    |> remove_empty_params()
-    |> merge_params(env)
+  defp read(file) do
+    File.read!(file)
+    |> String.split(~r/\n|\r\n|\r/, trim: true)
+    |> Enum.reject(fn line -> String.starts_with?(line, ["#", ";"]) end)
+    |> Enum.map(fn line ->
+        case String.split(line, ~r/\s/, parts: 2) do
+          [option]         -> {to_atom(option), true}
+          [option, value] -> {to_atom(option), value}
+        end
+      end)
   end
 
-  defp remove_empty_params(params) do
-    Enum.reject(params, fn {_k, value} -> is_nil(value) end)
+  defp to_atom(option), do: String.downcase(option) |> String.to_atom
+
+  defp get_data(config, key, value) do
+    if Enum.empty?(config) do
+      "#{key} #{value}\n"
+    else
+      Enum.map(config, fn({c_key, c_value}) ->
+        if to_string(c_key) == key, do: "#{c_key} #{value}\n", else: "#{c_key} #{c_value}\n"
+      end)
+    end
   end
 
-  defp merge_params(params, options) do
-    Keyword.merge(params, options)
+  defp write(data, file) do
+    case File.write(file, data) do
+      :ok -> file
+      {:error, error} ->
+        IO.puts("There was an error: #{error}")
+        System.halt(0)
+    end
   end
 end

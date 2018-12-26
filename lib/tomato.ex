@@ -1,8 +1,12 @@
 defmodule Tomato.CLI do
   alias Tomato.Config
+  alias Tomato.Token
+  alias Tomato.Params
   alias Tomato.Slack
   alias Tomato.Progress
 
+  @config_file ".tomatoconfig"
+  @miliseconds_in_minutes 1000 * 60
   @help [
     "Tomato is a tool for set slack status and presence\n",
     "Usage: tomato [parameters]\n",
@@ -13,12 +17,27 @@ defmodule Tomato.CLI do
     "  -d - duration: how long set status in minutes",
     "  -s - say: command say phrase at the end"
   ]
-  @miliseconds_in_minutes 1000 # * 60
 
   def main(args \\ []) do
+    config = get_config(@config_file)
+
     args
     |> parse_args
+    |> Params.init(config)
     |> process
+  end
+
+  defp get_config(file) do
+    config = Config.init(file)
+    token = config[:slack_token]
+    new_token = Token.init(token)
+
+    if token != new_token do
+      Config.save("slack_token", new_token, file)
+      get_config(file)
+    else
+      config
+    end
   end
 
   defp parse_args(args) do
@@ -26,27 +45,20 @@ defmodule Tomato.CLI do
       args
       |> OptionParser.parse(
         strict: [
-          help: :boolean,
           emoji: :string,
           text: :string,
           duration: :integer,
           presence: :string,
           say: :string
         ],
-        aliases: [h: :help, e: :emoji, t: :text, d: :duration, p: :presence, s: :say]
+        aliases: [e: :emoji, t: :text, d: :duration, p: :presence, s: :say]
       )
 
     opts
   end
 
-  defp process([]) do
-    IO.puts "no args"
-  end
-
-  defp process(options) do
-    params = Config.init(options)
-    token = params[:token]
-    help = params[:help]
+  defp process(params) do
+    token = params[:slack_token]
     emoji = params[:emoji]
     text = params[:text]
     duration = params[:duration]
@@ -56,10 +68,7 @@ defmodule Tomato.CLI do
 
     cond do
       !token ->
-        IO.puts("Token not set in environment variable")
-
-      help ->
-        show_help()
+        IO.puts("Token not set in config")
 
       emoji || text || presence ->
         expiration = get_expiration(timezone, duration)
@@ -73,6 +82,9 @@ defmodule Tomato.CLI do
 
       duration ->
         IO.puts("Nothing to do")
+
+      true ->
+        show_help()
     end
   end
 
