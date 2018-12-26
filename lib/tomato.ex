@@ -19,7 +19,7 @@ defmodule Tomato.CLI do
   ]
 
   def main(args \\ []) do
-    config = get_config(@config_file)
+    config = get_config("#{System.user_home()}/#{@config_file}")
 
     args
     |> parse_args

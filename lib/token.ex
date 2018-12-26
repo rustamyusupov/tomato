@@ -3,7 +3,7 @@ defmodule Tomato.Token do
 
   def init(token) do
     if !check(token) do
-      IO.puts("Token invalid.")
+      IO.puts("Token invalid or not set.")
       token = prompt()
       IO.puts("")
 
