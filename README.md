@@ -8,9 +8,20 @@ Tomato is a command-line tool to set slack status (emoji and text) and availabil
 * [Credits and license](#credits-and-license)
 
 ## Installation
+For Mac OS:
 1. Install Tomato `brew install tomato`
 2. Generate Slack [legacy token](https://api.slack.com/custom-integrations/legacy-tokens)
 3. Run `tomato` and set token from step 2.
+
+For Windows:
+1. Download and install [Erlang](https://www.erlang-solutions.com/resources/download.html) Package  
+Erlang -> Windows -> Standard -> Last version
+2. Download and install [Elixir](https://repo.hex.pm/elixir-websetup.exe)
+3. Download [tomato](https://github.com/rustamyusupov/tomato/raw/master/tomato) app
+4. Move Tomato to Windows directory
+5. Create file tomato.bat in Windows directory containig `ecript tomato %*`
+6. Generate Slack [legacy token](https://api.slack.com/custom-integrations/legacy-tokens)
+7. Run `tomato` and set token from step 6.
 
 ## Usage
 Run `tomato` without parameters to show help.
