@@ -21,8 +21,6 @@ defmodule Tomato.MixProject do
   defp deps do
     [
       {:progress_bar, "> 0.0.0"},
-      {:timex, "~> 3.1"},
-      {:tzdata, "~> 0.1.7", override: true},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.4"}
     ]
