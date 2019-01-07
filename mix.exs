@@ -14,7 +14,7 @@ defmodule Tomato.MixProject do
 
   def application do
     [
-      application: [:timex, :httpoison, :logger]
+      application: [:httpoison, :logger]
     ]
   end
 
