@@ -7,6 +7,7 @@ defmodule Tomato.CLI do
 
   @config_file ".tomatoconfig"
   @miliseconds_in_minutes 1000 * 60
+  @seconds_in_minutes 60
   @help [
     "Tomato is a tool for set slack status and presence\n",
     "Usage: tomato [parameters]\n",
@@ -99,7 +100,7 @@ defmodule Tomato.CLI do
       _ ->
         DateTime.utc_now()
         |> DateTime.to_unix()
-        |> shift_time(duration * 60)
+        |> shift_time(duration * @seconds_in_minutes)
     end
   end
 
