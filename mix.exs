@@ -20,7 +20,6 @@ defmodule Tomato.MixProject do
 
   defp deps do
     [
-      {:progress_bar, "> 0.0.0"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.4"}
     ]
