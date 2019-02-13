@@ -4,7 +4,7 @@ defmodule Tomato.MixProject do
   def project do
     [
       app: :tomato,
-      version: "0.1.1",
+      version: "0.2.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       escript: escript(),
@@ -14,15 +14,12 @@ defmodule Tomato.MixProject do
 
   def application do
     [
-      application: [:timex, :httpoison, :logger]
+      application: [:httpoison, :logger]
     ]
   end
 
   defp deps do
     [
-      {:progress_bar, "> 0.0.0"},
-      {:timex, "~> 3.1"},
-      {:tzdata, "~> 0.1.7", override: true},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.4"}
     ]

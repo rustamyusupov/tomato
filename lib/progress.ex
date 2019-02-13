@@ -1,4 +1,6 @@
 defmodule Tomato.Progress do
+  alias Tomato.ProgressBar
+
   def start(time) do
     interval = Kernel.trunc(time / 100)
 

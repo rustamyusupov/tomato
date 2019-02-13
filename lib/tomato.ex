@@ -7,6 +7,7 @@ defmodule Tomato.CLI do
 
   @config_file ".tomatoconfig"
   @miliseconds_in_minutes 1000 * 60
+  @seconds_in_minutes 60
   @help [
     "Tomato is a tool for set slack status and presence\n",
     "Usage: tomato [parameters]\n",
@@ -64,14 +65,13 @@ defmodule Tomato.CLI do
     duration = params[:duration]
     presence = params[:presence]
     say = params[:say]
-    timezone = params[:timezone] || 0
 
     cond do
       !token ->
         IO.puts("Token not set in config")
 
       emoji || text || presence ->
-        expiration = get_expiration(timezone, duration)
+        expiration = get_expiration(duration)
 
         Slack.set_status(token, emoji, text, expiration)
         presence && Slack.set_presence(token, presence)
@@ -88,15 +88,19 @@ defmodule Tomato.CLI do
     end
   end
 
-  defp get_expiration(timezone, duration) do
+  defp shift_time(time, duration) do
+    time + duration
+  end
+
+  defp get_expiration(duration) do
     case duration do
       nil ->
         0
 
       _ ->
-        Timex.now(timezone)
-        |> Timex.shift(minutes: duration)
-        |> Timex.to_unix()
+        DateTime.utc_now()
+        |> DateTime.to_unix()
+        |> shift_time(duration * @seconds_in_minutes)
     end
   end
 
