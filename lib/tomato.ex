@@ -9,9 +9,10 @@ defmodule Tomato.CLI do
   @miliseconds_in_minutes 1000 * 60
   @seconds_in_minutes 60
   @help [
-    "Tomato is a tool for set slack status and presence\n",
-    "Usage: tomato [parameters]\n",
-    "Parameters:",
+    "",
+    "Tomato v0.2.1",
+    "Tool for set slack status and presence\n",
+    "Usage: tomato [params]",
     "  -e - emoji: status emoji",
     "  -t - text: status text",
     "  -p - presence: auto | away",
